@@ -1,0 +1,27 @@
+version: '2'
+services:
+  frontend:
+    build: images/frontend-nginx/
+    ports:
+     - "80:80"
+    links:
+     - ttrss
+  mysql:
+    build: images/mysql/
+    volumes:
+      - mysql:/var/lib/mysql/
+  ttrss:
+    build: images/ttrss-nginx/
+    volumes:
+      - ttrss:/var/www/
+    links:
+      - mysql
+
+volumes:
+  ttrss:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/ttrss }
+  mysql:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/mysql }
+
