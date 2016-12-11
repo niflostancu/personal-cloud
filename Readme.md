@@ -1,4 +1,4 @@
-= Docker-based Personal Cloud / NAS images
+# Docker-based Personal Cloud / NAS images
 
 Contains several extensible images for providing personal cloud services:
 
@@ -7,13 +7,13 @@ Contains several extensible images for providing personal cloud services:
 - TinyTinyRSS + nginx image;
 - Seafile (file synchronization application) - TODO;
 
-=== Requirements ===
+## Requirements
 
 - Docker >= 1.10
 - Docker Compose >= 1.8.0
 - Docker Local Persist Volume Plugin
 
-=== Installation ===
+## Installation
 
 1. Clone the docker-compose file and edit it to fit your needs:
 ```
