@@ -4,14 +4,14 @@ Contains several extensible images for providing personal cloud services:
 
 - MySQL database (for services that depend on it);
 - Nginx frontend (reverse proxy for other services);
-- TinyTinyRSS + nginx image;
+- TinyTinyRSS (web-based RSS reader);
 - Seafile (file synchronization application) - TODO;
 
 ## Requirements
 
-- Docker >= 1.10
-- Docker Compose >= 1.8.0
-- Docker Local Persist Volume Plugin
+- [Docker](https://www.docker.com/) >= 1.10
+- [Docker Compose](https://docs.docker.com/compose/install/) >= 1.8.0
+- [Docker Local Persist Volume Plugin](https://github.com/CWSpear/local-persist)
 
 ## Installation
 
@@ -22,6 +22,7 @@ vim docker-compose.yml
 ```
 
 2. Build the docker images:
+
 ```
 docker-compose build
 ```
@@ -30,13 +31,23 @@ docker-compose build
 
 ```
 # MySQL data directory:
-docker-compose run mysql /opt/container/scripts/init.sh
+docker-compose run mysql mysql-init.sh
 # TinyTinyRSS installation
-docker-compose run ttrss bash
-> cd /var/www/rss/ && cp config.php-dist config.php
-> vim config.php  # enter database credentials and other config parameters
+docker-compose run -u www-data ttrss bash
 > ttrss-update-git.sh
-> docker-compose run -e DB_SU_PASS=<password> ttrss ttrss-install-db.php
+> cd /var/www/rss/
+> cp config.php-dist config.php
+> vim config.php  # enter database credentials (user/db created automatically)
+> # and other config parameters
+> DB_SU_PASS=<mysql root password> ttrss-install-db.php
 ```
+
+4. Test and deploy!
+
+```
+docker-compose up
+```
+
+Optionally, create an init script for automatically starting the containers at boot time.
 
 

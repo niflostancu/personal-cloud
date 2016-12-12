@@ -5,7 +5,7 @@
 # 
 
 SWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. "$SWD/lib.sh"
+. "$SWD/mysql-lib.sh"
 
 DATADIR="$(get_mysql_data_dir)"
 check_mysql_data_dir "$DATADIR"

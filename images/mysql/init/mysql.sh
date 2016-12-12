@@ -1,3 +1,3 @@
 #!/bin/sh
-exec /opt/container/scripts/run.sh
+exec /usr/local/bin/mysql-server.sh
 

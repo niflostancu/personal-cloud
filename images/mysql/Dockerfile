@@ -18,6 +18,6 @@ EXPOSE 3306
 ADD conf/my.cnf /etc/mysql/my.cnf
 
 # Container scripts
-ADD scripts /opt/container/scripts
+ADD scripts /usr/local/bin/
 ADD init/mysql.sh /etc/service/mysql/run
 
