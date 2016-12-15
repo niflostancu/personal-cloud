@@ -10,9 +10,9 @@ trap stop_server SIGINT SIGTERM
 
 if [[ "${FASTCGI}" =~ [Tt]rue ]]
 then
-    SEAFILE_FASTCGI_HOST='0.0.0.0' /opt/seafile/seafile-server-latest/seahub.sh start-fastcgi >> $log
+    SEAFILE_FASTCGI_HOST='0.0.0.0' setuser seafile /opt/seafile/seafile-server-latest/seahub.sh start-fastcgi >> $log
 else
-    /opt/seafile/seafile-server-latest/seahub.sh start >> $log 2>&1
+    setuser seafile /opt/seafile/seafile-server-latest/seahub.sh start >> $log 2>&1
 fi
 
 # Script should not exit unless seahub died
