@@ -7,6 +7,8 @@ services:
     links:
      - ttrss
      - seafile
+    volumes:  # seahub's media needs to be served by nginx
+      - seafile:/opt/seafile/
   mysql:
     build: images/mysql/
     volumes:
