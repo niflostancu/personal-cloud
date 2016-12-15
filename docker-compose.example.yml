@@ -6,6 +6,7 @@ services:
      - "80:80"
     links:
      - ttrss
+     - seafile
   mysql:
     build: images/mysql/
     volumes:
@@ -16,6 +17,13 @@ services:
       - ttrss:/var/www/
     links:
       - mysql
+  seafile:
+    build: images/seafile/
+    volumes:
+      - seafile:/opt/seafile/
+      - seafile_data:/var/seafile/
+    links:
+      - mysql
 
 volumes:
   ttrss:
@@ -24,4 +32,10 @@ volumes:
   mysql:
     driver: local-persist
     driver_opts: { mountpoint: /var/nas-data/mysql }
+  seafile:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/seafile }
+  seafile_data:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/seafile_data }
 
