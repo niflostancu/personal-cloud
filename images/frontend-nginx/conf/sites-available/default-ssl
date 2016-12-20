@@ -1,0 +1,42 @@
+# Nginx default server configuration file.
+#
+
+# The default http/80 server
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    root /var/www;
+    disable_symlinks on;
+    index index.html;
+
+    include snippets/letsencrypt.conf;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    include snippets-enabled/default-ssl/insecure/*.conf;
+}
+
+server {
+    listen 443 ssl http2 default_server;
+    listen [::]:443 ssl http2 default_server ipv6only=on;
+
+    include snippets/default-ssl/server;
+    include snippets/ssl.conf;
+
+    root /var/www;
+    disable_symlinks on;
+    index index.html;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    include snippets-enabled/default-ssl/*.conf;
+}
+

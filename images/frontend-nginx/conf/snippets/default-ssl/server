@@ -1,0 +1,8 @@
+# Override to the server name directive
+server_name mydomain.com www.mydomain.com;
+
+# Declare the SSL certificate paths for your default domain
+ssl_certificate /etc/letsencrypt/live/www.mydomain.com/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/www.mydomain.com/privkey.pem;
+ssl_trusted_certificate /etc/letsencrypt/live/www.mydomain.com/fullchain.pem;
+
