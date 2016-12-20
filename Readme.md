@@ -29,17 +29,18 @@ docker-compose build
 
 3. Initialize the services:
 
-```
-# MySQL data directory:
-docker-compose run mysql mysql-init.sh
-# TinyTinyRSS installation
-docker-compose run -u www-data ttrss bash
-> ttrss-update-git.sh
-> cd /var/www/rss/
-> cp config.php-dist config.php
-> vim config.php  # enter database credentials (user/db created automatically)
-> # and other config parameters
-> DB_SU_PASS=<mysql root password> ttrss-install-db.php
+```bash
+# Configure MySQL:
+host$ docker-compose run mysql mysql-init.sh
+# TinyTinyRSS:
+host$ docker-compose run -u www-data ttrss bash
+ttrss$ ttrss-update-git.sh
+ttrss$ cd /var/www/rss/
+ttrss$ cp config.php-dist config.php
+# enter database credentials (user/db created automatically)
+ttrss$ vim config.php
+# and other config parameters
+ttrss$ DB_SU_PASS="mysql root password" ttrss-install-db.php
 ```
 
 4. Test and deploy!
@@ -49,5 +50,11 @@ docker-compose up
 ```
 
 Optionally, create an init script for automatically starting the containers at boot time.
+
+## Configuration
+
+To further customize the containers, please see each separate service's documentation page:
+
+- [Frontend](docs/Frontend.md)
 
 
