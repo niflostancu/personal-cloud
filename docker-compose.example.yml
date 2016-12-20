@@ -4,11 +4,17 @@ services:
     build: images/frontend-nginx/
     ports:
      - "80:80"
+     - "443:443"
     links:
      - ttrss
      - seafile
-    volumes:  # seahub's media needs to be served by nginx
-      - seafile:/opt/seafile/
+    environment:
+     - SSL_ENABLED=false
+     - "DEFAULT_SNIPPETS=seafile ttrss"
+    volumes:
+      - nginx_config:/etc/nginx.overrides/
+      - letsencrypt:/etc/letsencrypt/
+      - seafile:/opt/seafile/  # seahub's media needs to be served by nginx
   mysql:
     build: images/mysql/
     volumes:
@@ -21,6 +27,8 @@ services:
       - mysql
   seafile:
     build: images/seafile/
+    environment:
+      - FASTCGI=true
     volumes:
       - seafile:/opt/seafile/
       - seafile_data:/var/seafile/
@@ -28,6 +36,12 @@ services:
       - mysql
 
 volumes:
+  nginx_config:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/nginx-config }
+  letsencrypt:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/letsencrypt }
   ttrss:
     driver: local-persist
     driver_opts: { mountpoint: /var/nas-data/ttrss }
