@@ -1,2 +1,5 @@
+# do not sync the final docker-compose
 docker-compose.yml
+# directory for personal images which shouldn't be committed
+images.local/
 
