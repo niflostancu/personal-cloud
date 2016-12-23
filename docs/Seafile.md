@@ -57,52 +57,52 @@ installing it.
 To install it on the container, you can do the following:
 
 1. We need to run bash on a clean container (so no other services are running on it):
-```bash
-docker-compose run -p 8000:8000 seafile bash
-```
+  ```bash
+  docker-compose run -p 8000:8000 seafile bash
+  ```
 
-The port mapping is used at the final step (for testing purposes).
+  The port mapping is used at the final step (for testing purposes).
 
 2. Next, fix the installation's directory permissions (so the *seafile* user owns it) and download
 seafile:
-```bash
-fix-perms.sh
-setuser seafile seafile-download.sh
-```
+  ```bash
+  fix-perms.sh
+  setuser seafile seafile-download.sh
+  ```
 
 3. Inside the container, change the user to seafile:
-```bash
-setuser seafile bash
-```
+  ```bash
+  setuser seafile bash
+  ```
 
 4. Proceed with the initialization:
-```bash
-cd /opt/seafile/seafile-server-*
-./setup-seafile-mysql.sh
-```
-The script is an interactive installer, so it will ask you several questions like database credentials etc.
-Don't worry, it will ask you for MySQL root password and create the credentials and databases automatically.
-Please leave the default ports if you intend to use the Frontend container as reverse proxy.
+  ```bash
+  cd /opt/seafile/seafile-server-*
+  ./setup-seafile-mysql.sh
+  ```
+  The script is an interactive installer, so it will ask you several questions like database credentials etc.
+  Don't worry, it will ask you for MySQL root password and create the credentials and databases automatically.
+  Please leave the default ports if you intend to use the Frontend container as reverse proxy.
 
-Note that if you run any seafile-related command as as root, you will need to repair the permissions
-for it to work:
-```
-chown seafile:seafile /opt/seafile -R
-```
+  Note that if you run any seafile-related command as as root, you will need to repair the permissions
+  for it to work:
+  ```
+  chown seafile:seafile /opt/seafile -R
+  ```
 
 5. After finishing installation and configuration, time to test it if it's working correctly:
-```bash
-cd /opt/seafile/seafile-server-*
-./seafile.sh start
-./seahub.sh start
+  ```bash
+  cd /opt/seafile/seafile-server-*
+  ./seafile.sh start
+  ./seahub.sh start
 # and test it!
-```
+  ```
 
-If successful, exit the interactive session, stop the container and run it using its default
-command (*/sbin/my_init*).
-Seafile services should automatically be started.
+  If successful, exit the interactive session, stop the container and run it using its default
+  command (*/sbin/my_init*).
+  Seafile services should automatically be started.
 
-If using the Frontend, start it too and check it if properly configured!
+  If using the Frontend, start it too and check it if properly configured!
 
 ## Customization
 
