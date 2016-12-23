@@ -1,4 +1,4 @@
-# Nginx Frontend Configuration
+# Nginx Frontend Container
 
 This file describes the configuration of the Nginx-based frontend container.
 It serves as reverse proxy for the other services (e.g. Seafile, TinyTinyRSS).
@@ -8,6 +8,44 @@ Features:
 - lightweight;
 - SSL (optional) with [Let's Encrypt](https://letsencrypt.org);
 - fully customizable using environment variables and configuration volumes;
+
+## Usage
+
+Add the following to your *docker-compose.yml* file:
+
+```yaml
+services:
+  frontend:
+    build: images/frontend-nginx/
+    ports:
+     - "80:80"
+     - "443:443"  # if you want https, too!
+    links:
+     - ttrss
+     - seafile
+    environment:
+     - SSL_ENABLED=false  # read on for instructions on how to enable it
+     - "DEFAULT_SNIPPETS=seafile ttrss"  # list of containers to be rev-proxied
+    volumes:
+      - nginx_config:/etc/nginx.overrides/
+      - letsencrypt:/etc/letsencrypt/  # if you want to use Let's Encrypt
+      # and any other volumes that may be required by other services
+```
+
+Don't forget to declare the required volumes:
+```yaml
+volumes:
+  nginx_config:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/nginx-config }
+  letsencrypt:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/letsencrypt }
+```
+
+## Initialization
+
+This container is ready to run without any prior initialization.
 
 ## Customization
 
