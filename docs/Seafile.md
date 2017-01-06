@@ -36,7 +36,7 @@ services:
     links:
      - seafile
     environment:
-     - "DEFAULT_SNIPPETS=... seafile"
+     - "DEFAULT_SNIPPETS=... seafile" # or seafile_nr (for non-root path)
     volumes:
       # seahub's media needs to be served by nginx
       - seafile:/opt/seafile/
@@ -67,6 +67,7 @@ To install it on the container, you can do the following:
 seafile:
   ```bash
   fix-perms.sh
+  cd /opt/seafile
   setuser seafile seafile-download.sh
   ```
 

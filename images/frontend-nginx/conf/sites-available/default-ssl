@@ -33,9 +33,7 @@ server {
     root /var/www;
     disable_symlinks on;
     index index.html;
-    location / {
-        try_files $uri $uri/ =404;
-    }
+    try_files $uri $uri/ =404;
 
     include snippets-enabled/default-ssl/*.conf;
 }
