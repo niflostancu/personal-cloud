@@ -1,16 +1,9 @@
 #!/bin/bash
 # MySQL data volume initialization script
-# Some code borrowed from the official MySQL Docker image:
-# https://github.com/docker-library/mysql/blob/master/5.5/docker-entrypoint.sh
-# 
 
-SWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. "$SWD/mysql-lib.sh"
+set -e
 
-DATADIR="$(get_mysql_data_dir)"
-check_mysql_data_dir "$DATADIR"
-
-if is_mysql_data_initialized "$DATADIR"; then
+if [ -d "/var/lib/mysql/mysql" ]; then
     echo -n "A MySQL data directory already exists! Do you want to delete it? [y/N] "
     finish=""
     while [ -z "$finish" ]; do
@@ -29,7 +22,7 @@ if is_mysql_data_initialized "$DATADIR"; then
         fi
     done
     if [ "$answer" = "y" ]; then
-        rm -rf "$DATADIR/"*
+        rm -rf "/var/lib/mysql/"*
     else
         echo "The current MySQL data volume was left unchanged."
         exit 0
@@ -47,52 +40,19 @@ if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
     done
 fi
 
-chown -R $USER:$USER "$DATADIR"
+chown -R mysql:mysql "/var/lib/mysql"
 
 echo 'Initializing database...'
-mysqld --initialize-insecure
 
-mysqld --skip-networking &
-MYSQL_PID="$!"
+mysql_install_db --user=mysql
 
-function mysql_term_handler() {
-    kill -SIGTERM "$MYSQL_PID"
-    wait "$MYSQL_PID"
-    exit $?
-}
-trap 'mysql_term_handler' HUP INT TERM QUIT
-
-# The mysql client command to use for configuring / testing
-MYSQL_CMD=( mysql --protocol=socket -uroot )
-
-for i in {15..0}; do
-    if echo 'SELECT 1' | "${MYSQL_CMD[@]}" &> /dev/null; then
-        break
-    fi
-    echo 'MySQL init process in progress...'
-    sleep 2
-done
-if [ "$i" = 0 ]; then
-    echo >&2 'MySQL init process failed.'
-    exit 1
-fi
-
-mysql_tzinfo_to_sql /usr/share/zoneinfo | "${MYSQL_CMD[@]}" mysql
-
-"${MYSQL_CMD[@]}" <<-EOSQL
-    -- What's done in this file shouldn't be replicated
-    SET @@SESSION.SQL_LOG_BIN=0;
-    DELETE FROM mysql.user ;
-    CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
-    GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
-    DROP DATABASE IF EXISTS test ;
-    FLUSH PRIVILEGES ;
+/usr/bin/mysqld --user=mysql --bootstrap --verbose=0 <<-EOSQL
+    USE mysql;
+    DELETE FROM mysql.user WHERE 1;
+    FLUSH PRIVILEGES;
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD' WITH GRANT OPTION;
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' identified by '$MYSQL_ROOT_PASSWORD' WITH GRANT OPTION;
 EOSQL
-
-if ! kill -s TERM "$MYSQL_PID" || ! wait "$MYSQL_PID"; then
-    echo >&2 'MySQL data volume initialization failed.'
-    exit 1
-fi
 
 echo 'The MySQL data volume was successfully initialized.'
 exit 0

@@ -1,3 +1,3 @@
 #!/bin/sh
-exec /usr/local/bin/mysql-server.sh
+exec /usr/local/bin/run-mysql.sh
 

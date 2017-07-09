@@ -1,15 +1,11 @@
 # Generic MySQL container image
-FROM phusion/baseimage
+FROM nicloud/base
 MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
-CMD ["/sbin/my_init"]
+ENV MYSQL_UID=1000
+RUN userdel mysql; useradd -u $MYSQL_UID -s /bin/false mysql
 
-ENV SERVICE_UID=1000 USER=mysql
-RUN useradd -u $SERVICE_UID -s /bin/false $USER
-
-RUN export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install -y \
-    mysql-server && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/lib/mysql/*
+RUN apk --update --no-cache add mariadb mariadb-client pwgen 
 
 VOLUME /var/lib/mysql
 EXPOSE 3306
@@ -19,5 +15,6 @@ ADD conf/my.cnf /etc/mysql/my.cnf
 
 # Container scripts
 ADD scripts /usr/local/bin/
+ADD init/check-mysql.sh /etc/startup.d/00-check-mysql.sh
 ADD init/mysql.sh /etc/service/mysql/run
 
