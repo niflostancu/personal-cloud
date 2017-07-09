@@ -1,6 +1,13 @@
 #!/bin/bash
 
+rm -f /var/log/nginx/access.log
+rm -f /var/log/nginx/error.log
+ln -s /dev/stderr /var/log/nginx/error.log
+ln -s /dev/stdout /var/log/nginx/access.log
+
 rm -f /etc/nginx/sites-enabled/* 2>/dev/null
+
+set -e
 
 OVERRIDES_DIR="/etc/nginx.overrides"
 
@@ -22,7 +29,9 @@ else
 fi
 
 # first, copy configuration overrides
-cp -r "$OVERRIDES_DIR/." "/etc/nginx/"
+if [[ -d "$OVERRIDES_DIR" ]]; then
+    cp -r "$OVERRIDES_DIR/." "/etc/nginx/"
+fi
 
 # activate default snippets
 mkdir -p "$DEFAULT_SNIPPETS_ENDIR"
