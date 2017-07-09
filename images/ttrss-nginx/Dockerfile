@@ -1,30 +1,28 @@
 # TinyTinyRSS (nginx based) image for personal cloud
-FROM phusion/baseimage
+FROM nicloud/base
 MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
-CMD ["/sbin/my_init"]
+ENV WWW_UID=1000
+RUN userdel nginx; useradd -u $WWW_UID -s /bin/false nginx
 
-ENV SERVICE_UID=1000 USER=www-data
-RUN userdel $USER; useradd -u $SERVICE_UID -s /bin/false $USER
+RUN apk --update --no-cache add \
+    nginx php7-fpm php7 php7-curl php7-gd php7-json \
+    php7-pgsql php7-mysqli php7-mcrypt php7-dom php7-mbstring git ca-certificates
 
-RUN export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install -y \
-    nginx supervisor php7.0-fpm php7.0-cli php7.0-curl php7.0-gd php7.0-json \
-    php7.0-pgsql php7.0-mysql php7.0-mcrypt php7.0-dom php7.0-mbstring git ca-certificates && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN mkdir -p /run/php
-RUN chown www-data:www-data /var/www -R
+RUN mkdir -p /run/php && mkdir -p /run/nginx
 
 # expose nginx HTTP
+VOLUME /var/www
 EXPOSE 80
 
 # add config and init scripts
+ADD init/check-ttrss.sh /etc/startup.d/00-check-ttrss.sh
 ADD init/nginx.sh /etc/service/nginx/run
 ADD init/php-fpm.sh /etc/service/php-fpm/run
 ADD init/ttrss-update-daemon.sh /etc/service/ttrss-update-daemon/run
 
-ADD conf/php-overrides.ini /etc/php/7.0/fpm/conf.d/99-overrides.ini
-ADD conf/nginx-default.conf /etc/nginx/sites-available/default
+ADD conf/php-overrides.ini /etc/php7/fpm/conf.d/99-overrides.ini
+ADD conf/nginx-default.conf /etc/nginx/conf.d/default.conf
 
 ADD scripts /usr/local/bin
 
