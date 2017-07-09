@@ -1,7 +1,8 @@
-version: '2'
+# Example Compose file using Docker Local Persist volumes.
+version: '3'
 services:
   frontend:
-    build: images/frontend-nginx/
+    image: nicloud/frontend-nginx:latest
     ports:
      - "80:80"
      - "443:443"
@@ -12,34 +13,34 @@ services:
      - SSL_ENABLED=false
      - "DEFAULT_SNIPPETS=seafile ttrss"
     volumes:
-      - nginx_config:/etc/nginx.overrides/
-      - letsencrypt:/etc/letsencrypt/
-      - seafile:/opt/seafile/  # seahub's media needs to be served by nginx
+     - nginx-config:/etc/nginx.overrides/
+     - nginx-letsencrypt:/etc/letsencrypt/
+     - seafile:/home/seafile/  # seahub's media needs to be served by nginx
   mysql:
-    build: images/mysql/
+    image: nicloud/mysql:latest
     volumes:
       - mysql:/var/lib/mysql/
   ttrss:
-    build: images/ttrss-nginx/
+    image: nicloud/ttrss-nginx:latest
     volumes:
-      - ttrss:/var/www/
+     - ttrss:/var/www/
     links:
-      - mysql
+     - mysql
   seafile:
-    build: images/seafile/
-    environment:
-      - FASTCGI=true
+    image: nicloud/seafile:latest
     volumes:
-      - seafile:/opt/seafile/
-      - seafile_data:/var/seafile/
+     - seafile:/home/seafile/
+     - seafile-data:/var/lib/seafile/
     links:
-      - mysql
+     - mysql
+    environment:
+     - FASTCGI=true
 
 volumes:
-  nginx_config:
+  nginx-config:
     driver: local-persist
     driver_opts: { mountpoint: /var/nas-data/nginx-config }
-  letsencrypt:
+  nginx-letsencrypt:
     driver: local-persist
     driver_opts: { mountpoint: /var/nas-data/letsencrypt }
   ttrss:
@@ -51,7 +52,7 @@ volumes:
   seafile:
     driver: local-persist
     driver_opts: { mountpoint: /var/nas-data/seafile }
-  seafile_data:
+  seafile-data:
     driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/seafile_data }
+    driver_opts: { mountpoint: /var/nas-data/seafile-data }
 

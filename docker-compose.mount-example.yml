@@ -1,0 +1,38 @@
+# Example Compose file using direct mounts
+version: '3'
+services:
+  frontend:
+    image: nicloud/frontend-nginx:latest
+    ports:
+     - "80:80"
+     - "443:443"
+    links:
+     - ttrss
+     - seafile
+    environment:
+     - SSL_ENABLED=false
+     - "DEFAULT_SNIPPETS=seafile ttrss"
+    volumes:
+     - ./data/nginx-config:/etc/nginx.overrides/
+     - ./data/nginx-letsencrypt:/etc/letsencrypt/
+     - ./data/seafile:/home/seafile/  # seahub's media needs to be served by nginx
+  mysql:
+    image: nicloud/mysql:latest
+    volumes:
+      - ./data/mysql:/var/lib/mysql/
+  ttrss:
+    image: nicloud/ttrss-nginx:latest
+    volumes:
+     - ./data/ttrss:/var/www/
+    links:
+     - mysql
+  seafile:
+    image: nicloud/seafile:latest
+    volumes:
+     - ./data/seafile:/home/seafile/
+     - ./data/seafile-data:/var/lib/seafile/
+    links:
+     - mysql
+    environment:
+     - FASTCGI=true
+

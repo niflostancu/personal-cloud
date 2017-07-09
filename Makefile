@@ -10,6 +10,13 @@ endif
 
 all: base frontend mysql seafile ttrss
 
+push:
+	docker push $(IMAGE_PREFIX)base:$(IMAGE_VERSION)
+	docker push $(IMAGE_PREFIX)frontend-nginx:$(IMAGE_VERSION)
+	docker push $(IMAGE_PREFIX)mysql:$(IMAGE_VERSION)
+	docker push $(IMAGE_PREFIX)seafile:$(IMAGE_VERSION)
+	docker push $(IMAGE_PREFIX)ttrss-nginx:$(IMAGE_VERSION)
+
 base:
 	docker build $(BUILD_ARGS) -t $(IMAGE_PREFIX)base:$(IMAGE_VERSION) -f ./images/base/Dockerfile ./images/base/
 
