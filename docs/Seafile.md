@@ -3,6 +3,17 @@
 [Seafile](https://seafile.com) is a open-source, self-hosted file syncing software suite
 (e.g. Dropbox alternative).
 
+## WARNING
+
+**The container code was rewritten to use Alpine Linux. Make sure to backup the
+old installation before upgrading!**
+
+The recommended way to upgrade to the new Alpine version is start with a new
+Seafile configuration, edit it using the old values then re-import the SQL
+database and data directory on the new container.
+
+Further upgrades to the Seafile container will be automatic.
+
 ## Usage
 
 Add the following to your *docker-compose.yml* file:
@@ -10,107 +21,76 @@ Add the following to your *docker-compose.yml* file:
 ```yaml
 services:
   seafile:
-    build: images/seafile/
+    image: nicloud/seafile:latest
     environment:
-      - FASTCGI=true  # if you want to use nginx as reverse-proxy
+      - FASTCGI=true  # if you want to use a frontend / reverse-proxy
     volumes:
-      - seafile:/opt/seafile/
-      - seafile_data:/var/seafile/
+      - seafile:/home/seafile/
+      - seafile-data:/var/lib/seafile/
     links:
       - mysql
 ```
 
 Note that it depends on the [MySQL service](MySQL.md), so make sure to include it too.
 
-It also requires several persistent volumes for installation, configuration and storing the data
-blocks:
+It also requires several persistent volumes for storing configuration and data:
+
 ```yaml
 volumes:
+  seafile:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/seafile }
+  seafile-data:
+    driver: local-persist
+    driver_opts: { mountpoint: /var/nas-data/seafile-data }
 ```
 
 You will probably want to reverse-proxy it using the [Frontend container](Frontend.md).
-To do this, set the "FASTCGI=true" environment variable and link it to the *frontend* container:
+To do this, set the "FASTCGI=true" environment variable and link it to the _frontend_ container:
+
 ```yaml
 services:
-  frontend:  # note:add the following extra entries to your frontend config
+  frontend:  
+    # add the following extra entries to your frontend config
     links:
      - seafile
     environment:
      - "DEFAULT_SNIPPETS=... seafile" # or seafile_nr (for non-root path)
     volumes:
       # seahub's media needs to be served by nginx
-      - seafile:/opt/seafile/
+      - seafile:/home/seafile/
 ```
 
-Note that Frontend also needs to access the *seafile* installation volume because it contains static
-files which Seahub in FastCGI mode will refuse to serve, so nginx must do it.
+Note that Frontend also needs to access the *seafile* installation volume
+because it contains static files, which Seahub in FastCGI mode will refuse to
+serve, so nginx must do it.
 
 ## Initialization
 
-Seafile needs to be properly installed before being able to use it.
+Seafile needs to be properly set up before being able to use it.
 
-Note that the container is hardcoded to use the */opt/seafile/* installation path.
+In order to do that, just run the container using an interactive session:
 
-Please read [the official documentation](https://manual.seafile.com/deploy/using_mysql.html) on
-installing it.
+```bash
+docker-compose run seafile -e "FASTCGI=false" -p 8000:8000
+```
 
-To install it on the container, you can do the following:
+The container will detect this is a new installation and a script will ask you
+several questions like site info and database credentials.
 
-1. We need to run bash on a clean container (so no other services are running on it):
-  ```bash
-  docker-compose run -p 8000:8000 seafile bash
-  ```
-
-  The port mapping is used at the final step (for testing purposes).
-
-2. Next, fix the installation's directory permissions (so the *seafile* user owns it) and download
-seafile:
-  ```bash
-  fix-perms.sh
-  cd /opt/seafile
-  setuser seafile seafile-download.sh
-  ```
-
-3. Inside the container, change the user to seafile:
-  ```bash
-  setuser seafile bash
-  ```
-
-4. Proceed with the initialization:
-  ```bash
-  cd /opt/seafile/seafile-server-*
-  ./setup-seafile-mysql.sh
-  ```
-  The script is an interactive installer, so it will ask you several questions like database credentials etc.
-  Don't worry, it will ask you for MySQL root password and create the credentials and databases automatically.
-  Please leave the default ports if you intend to use the Frontend container as reverse proxy.
-
-  Note that if you run any seafile-related command as as root, you will need to repair the permissions
-  for it to work:
-  ```
-  chown seafile:seafile /opt/seafile -R
-  ```
-
-5. After finishing installation and configuration, time to test it if it's working correctly:
-  ```bash
-  cd /opt/seafile/seafile-server-*
-  ./seafile.sh start
-  ./seahub.sh start
-# and test it!
-  ```
-
-  If successful, exit the interactive session, stop the container and run it using its default
-  command (*/sbin/my_init*).
-  Seafile services should automatically be started.
-
-  If using the Frontend, start it too and check it if properly configured!
+You can then test it right away, by going to _localhost:8000_.
 
 ## Customization
 
-As the entire Seafile installation and its configuration files are stored inside a persistent volume,
-there is no need to modify / rebase this image, simply edit them direcly on the container.
+To customize Seafile, just edit the required files inside the _/home/seafile_
+volume.
 
-Also, if you want to upgrade Seafile to a new version, you can use the *seafile-download.sh* script
-again and then run the [version-specific upgrade scripts](https://manual.seafile.com/deploy/upgrade.html).
+## Administration
 
+To administrate your Seafile installation, make sure to run the container as
+the _seafile_ user so the permissions are left correct:
+
+```bash
+docker-compose run -u seafile seafile bash
+```
 
