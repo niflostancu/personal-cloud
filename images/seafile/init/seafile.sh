@@ -1,23 +1,21 @@
 #!/bin/bash
 
-log=/var/log/seafile.log
+if [[ ! -d "$SEAFILE_HOME/conf" ]]; then
+    echo "Seafile configuration directory '$SEAFILE_HOME/conf' does not exist!"
+    exit 1
+fi
 
-function stop_server() {
-    kill $( ps ax | grep -E 'seafile-controller|ccnet-server|seaf-server' | grep -v grep | awk '{ print $1 }' | xargs )
-    exit 0
-}
+cd ${SEAFILE_HOME}
 
-trap stop_server SIGINT SIGTERM
+SEAFILE_ARGS=(\
+    -c "${SEAFILE_HOME}/ccnet" \
+    -d "${SEAFILE_DATA_DIR}" \
+    -F "${SEAFILE_HOME}/conf" )
 
-# Fix for https://github.com/haiwen/seafile/issues/478, forward seafdav localhost-only port
-[[ "${WORKAROUND478}" =~ [Tt]rue ]] && socat TCP4-LISTEN:8080,fork TCP4:localhost:8081 &
+if ! chpst -u seafile -- seafile-controller --test "${SEAFILE_ARGS[@]}"; then
+    echo "Seafile self-test failed!"
+    exit 2
+fi
 
-setuser seafile /opt/seafile/seafile-server-latest/seafile.sh start >> $log 2>&1
-
-# Script should not exit unless seafile died
-while pgrep -f "seafile-controller" 2>&1 >/dev/null; do
-    sleep 1;
-done
-
-exit 0
+exec chpst -u seafile -- seafile-controller -f "${SEAFILE_ARGS[@]}"
 

@@ -1,28 +1,27 @@
 # Seafile server image
-FROM phusion/baseimage
+FROM nicloud/base
 MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
-CMD ["/sbin/my_init"]
+ENV SEAFILE_UID=1000 \
+    SEAFILE_HOME="/home/seafile" \
+    SEAFILE_DATA_DIR="/var/lib/seafile" \
+    SEAFILE_VERSION="6.1.0"
 
-ENV SERVICE_UID=1000 USER=seafile
-RUN userdel $USER; useradd -u $SERVICE_UID -s /bin/false $USER
+# Main build script
+COPY build.sh /tmp/build.sh
+COPY seafile-server.patch /tmp/seafile-server.patch
+# Execute our build script and delete it because we won't need it anymore
+RUN /tmp/build.sh "$SEAFILE_VERSION" "$SEAFILE_SERVER_DIR" && rm /tmp/build.sh
 
-RUN export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install -y \
-    python2.7 libpython2.7 python-setuptools python-imaging \
-    python-simplejson python-ldap python-mysqldb python-urllib3 python-memcache \
-    wget curl jq ca-certificates netcat-openbsd socat && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-VOLUME /opt/seafile
-VOLUME /var/seafile
-
-EXPOSE 10001 12001 8000 8080 8082
+EXPOSE 8000 8082
+VOLUME /home/seafile
+VOLUME /var/lib/seafile
 
 # Container scripts
 ADD scripts /usr/local/bin/
-# Daemons
+
+# Init Scripts
+ADD init/check-seafile.sh /etc/startup.d/00-check-seafile.sh
 ADD init/seafile.sh /etc/service/seafile/run
 ADD init/seahub.sh /etc/service/seahub/run
-ADD init/fix-perms.sh /etc/my_init.d/00-fix-perms.sh
-ADD init/fix-perms.sh /usr/local/bin/fix-perms.sh
 
