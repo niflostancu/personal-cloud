@@ -6,8 +6,9 @@ ENV WWW_UID=1000
 RUN userdel nginx; useradd -u $WWW_UID -s /bin/false nginx
 
 RUN apk --update --no-cache add \
-    nginx php7-fpm php7 php7-curl php7-gd php7-json \
-    php7-pgsql php7-mysqli php7-mcrypt php7-dom php7-mbstring git ca-certificates
+    nginx php7-fpm php7 php7-curl php7-gd php7-json php7-pcntl php7-fileinfo \
+    php7-xml php7-posix php7-session php7-pgsql php7-mysqli php7-mcrypt \
+    php7-dom php7-mbstring php7-iconv php7-intl git ca-certificates
 
 RUN mkdir -p /run/php && mkdir -p /run/nginx
 
@@ -22,6 +23,7 @@ ADD init/php-fpm.sh /etc/service/php-fpm/run
 ADD init/ttrss-update-daemon.sh /etc/service/ttrss-update-daemon/run
 
 ADD conf/php-overrides.ini /etc/php7/fpm/conf.d/99-overrides.ini
+ADD conf/php-fpm-www.conf /etc/php7/php-fpm.d/www.conf
 ADD conf/nginx-default.conf /etc/nginx/conf.d/default.conf
 
 ADD scripts /usr/local/bin
