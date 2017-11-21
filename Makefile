@@ -4,33 +4,29 @@ IMAGE_PREFIX=nicloud/
 IMAGE_VERSION=latest
 BUILD_ARGS=
 
-ifeq ($(NO_CACHE),1)
-BUILD_ARGS+="--pull --no-cache"
-endif
-
 all: base frontend mysql seafile ttrss
 
 push:
-	docker push $(IMAGE_PREFIX)base:$(IMAGE_VERSION)
-	docker push $(IMAGE_PREFIX)frontend-nginx:$(IMAGE_VERSION)
-	docker push $(IMAGE_PREFIX)mysql:$(IMAGE_VERSION)
-	docker push $(IMAGE_PREFIX)seafile:$(IMAGE_VERSION)
-	docker push $(IMAGE_PREFIX)ttrss-nginx:$(IMAGE_VERSION)
+	make -C ./images/base/ push
+	make -C ./images/frontend-nginx/ push
+	make -C ./images/mysql/ push
+	make -C ./images/seafile/ push
+	make -C ./images/ttrss-nginx/ push
 
 base:
-	docker build $(BUILD_ARGS) -t $(IMAGE_PREFIX)base:$(IMAGE_VERSION) -f ./images/base/Dockerfile ./images/base/
+	make -C ./images/base/ build
 
 frontend:
-	docker build $(BUILD_ARGS) -t $(IMAGE_PREFIX)frontend-nginx:$(IMAGE_VERSION) -f ./images/frontend-nginx/Dockerfile ./images/frontend-nginx/
+	make -C ./images/frontend-nginx/ build
 
 mysql:
-	docker build $(BUILD_ARGS) -t $(IMAGE_PREFIX)mysql:$(IMAGE_VERSION) -f ./images/mysql/Dockerfile ./images/mysql/
+	make -C ./images/mysql/ build
 
 seafile:
-	docker build $(BUILD_ARGS) -t $(IMAGE_PREFIX)seafile:$(IMAGE_VERSION) -f ./images/seafile/Dockerfile ./images/seafile/
+	make -C ./images/seafile/ build
 
 ttrss:
-	docker build $(BUILD_ARGS) -t $(IMAGE_PREFIX)ttrss-nginx:$(IMAGE_VERSION) -f ./images/ttrss-nginx/Dockerfile ./images/ttrss-nginx/
+	make -C ./images/ttrss-nginx/ build
 
-.PHONY: all base frontend mysql seafile ttrss
+.PHONY: all push base frontend mysql seafile ttrss
 
