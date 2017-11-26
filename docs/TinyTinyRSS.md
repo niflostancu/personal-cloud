@@ -43,21 +43,30 @@ services:
 TinyTinyRSS needs to be installed (it also needs its database initialized, a MySQL account configured
 etc.). For this, follow the steps:
 
-1. Run bash inside a clean *ttrss* container (as www-data):
+1. Run it for the first time:
+
 ```bash
-docker-compose run -u www-data ttrss bash
+docker-compose run -p 80 ttrss
 ```
 
-2. Inside the container, run the following commands:
+It should display a message that you need to go to an URL to complete the installation.
+
+2. Access the URL and install it.
+
+You may need to manually create MariaDB database and user.
+
+For this, open a bash session on your mysql container:
+
 ```bash
-ttrss-update-git.sh  # downloads and installs TTRSS
-cd /var/www/rss/     # go to the install location
-# clone the default config
-cp config.php-dist config.php
-# edit it and enter database credentials (user/db will be created automatically)
-vim config.php
-# run the installation script (which will create the required user / database / tables)
-DB_SU_PASS="YOUR MYSQL ROOT PASSWORD" ttrss-install-db.php
+docker-compose run mysql bash
+```
+
+Inside the shell, run the mysql client and create the required database:
+
+```bash
+mysql -u root -p
+# enter your password
+MariaDB> CREATE DATABASE ttrss CHARSET 'UTF8';
 ```
 
 ## Customization

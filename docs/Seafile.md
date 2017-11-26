@@ -72,7 +72,7 @@ Seafile needs to be properly set up before being able to use it.
 In order to do that, just run the container using an interactive session:
 
 ```bash
-docker-compose run seafile -e "FASTCGI=false" -p 8000:8000
+docker-compose run -e "FASTCGI=false" -p 8000:8000 seafile
 ```
 
 The container will detect this is a new installation and a script will ask you
