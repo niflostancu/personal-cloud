@@ -6,7 +6,7 @@ set -x
 PATH="${PATH}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 
 # Seafile Version (first argument)
-SEAFILE_VERSION="6.0.10"
+SEAFILE_VERSION="6.2.3"
 if [ "x$1" != "x" ]; then
     SEAFILE_VERSION=$1
 fi
@@ -89,10 +89,6 @@ index 0b40098..a569b94 100644
 " | patch -p1 && pip install -r requirements.txt
 
 pip install gunicorn flup django-picklefield requests mysql-python
-#   django_compressor django-post_office 
-#   django==1.8 pytz django-statici18n djangorestframework
-#   chardet python-dateutil six openpyxl
-#pip install https://github.com/haiwen/django-constance/archive/bde7f7c.zip
 
 #mv $WORK_DIR/seahub-${SEAFILE_VERSION}-server/ /usr/local/share/seahub
 mkdir -p /usr/local/share/seafile

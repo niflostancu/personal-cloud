@@ -104,7 +104,7 @@ else #[ ! -f $VERSION_FILE ];
 			done
 
 			# Run minor upgrade, just in case (Actually needed when only last number was changed)
-			if [ $INTERACTIVE -eq 1 ]; then
+			if [[ "$INTERACTIVE" -eq 1 ]]; then
 				./seafile-server/upgrade/minor-upgrade.sh
 			else
 				echo | ./seafile-server/upgrade/minor-upgrade.sh
