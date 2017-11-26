@@ -3,6 +3,6 @@
 # ideal to use for customizing the build.
 # Rename to custom.mk and you are free to modify any of the variables below.
 
-IMAGE_PREFIX=nicloud/
-VERSION_SUFFIX=-custom
+IMAGE_PREFIX?=nicloud/
+VERSION_SUFFIX?=-custom
 

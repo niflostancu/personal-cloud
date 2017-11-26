@@ -1,8 +1,11 @@
 # Docker build script based on make
 
-IMAGE_PREFIX=nicloud/
-IMAGE_VERSION=latest
-BUILD_ARGS=
+# variables passed to the other Makefiles
+IMAGE_PREFIX?=
+VERSION_SUFFIX?=
+NO_CACHE?=
+BUILD_ARGS?=
+export IMAGE_PREFIX VERSION_SUFFIX NO_CACHE BUILD_ARGS
 
 all: base frontend mysql seafile ttrss
 
