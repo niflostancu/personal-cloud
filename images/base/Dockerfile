@@ -3,6 +3,7 @@ FROM alpine:3.6
 MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
 # Install common packages
+RUN apk --update upgrade
 RUN apk --update --no-cache add runit shadow bash
 
 # Add files
