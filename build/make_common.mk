@@ -4,7 +4,9 @@
 
 -include ./custom.mk
 
-IMAGE_PREFIX ?= nicloud/
+ifeq ($(IMAGE_PREFIX),)
+IMAGE_PREFIX = nicloud/
+endif
 VERSION_SUFFIX ?= 
 
 # computed variables
@@ -14,7 +16,7 @@ VERSION_DATE = $(shell date +'%y-%m-%d')
 IMAGE_VERSION = $(IMAGE_VERSION_FILE)$(IMAGE_VERSION_SUFFIX)
 FULL_IMAGE_NAME=$(IMAGE_PREFIX)$(IMAGE_NAME)
 
-BUILD_ARGS ?= --pull
+BUILD_ARGS = --pull
 ifeq ($(NO_CACHE),1)
 BUILD_ARGS += --no-cache
 endif
