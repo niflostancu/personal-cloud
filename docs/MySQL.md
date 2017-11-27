@@ -45,11 +45,28 @@ This will ask you for a root password and create the required databases.
 Note that you only need to do this once (if your data directory is mounted as a
 volume).
 
+If you ever need a MySQL console, you can use an exec:
+
+```bash
+docker-compose exec mysql mysql -u root -p
+```
+
+## Automatic Backup
+
+The container supports automatic backup & rotation via mysqldump / logrotate.
+
+To enable it, you need to:
+
+- open a mysql console and create a MySQL user for backups:
+  `GRANT LOCK TABLES, SELECT ON *.* TO 'backup'@'localhost' IDENTIFIED BY 'PASSWORD';`
+  (you could also use root, but it's not recommended for security reasons)
+- define the _MYSQL_BACKUP_USER_ and _MYSQL_BACKUP_PASSWORD_ environment variables on your docker-compose file;
+- use a volume / external mountpoint for _/var/backup_.
+
+The default cron job runs each day at 22:00. If you want to modify it, read below.
+
 ## Customization
 
-If you need to edit _my.cnf_, either mount a volume to _/etc/mysql_ or inherit
-this image.
-
-If you need to administrate the database, just use *docker-compose exec* on the
-container and use the mysql client from there.
+If you need to edit any configuration file, either mount a volume in its place
+or inherit this image.
 
