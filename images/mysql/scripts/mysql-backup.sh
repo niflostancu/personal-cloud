@@ -8,6 +8,6 @@ if [[ -n "$MYSQL_BACKUP_USER" ]]; then
     cp -a /var/backup/mysql.sql.gz /var/backup/mysql.W.sql.gz
     cp -a /var/backup/mysql.sql.gz /var/backup/mysql.M.sql.gz
 
-    logrotate -s /var/backup/.mysql-rotate.state -f /etc/logrotate.custom/mysql-backup
+    logrotate -s /var/backup/.mysql-rotate.state /etc/logrotate.custom/mysql-backup
 fi
 
