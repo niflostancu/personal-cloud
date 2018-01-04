@@ -11,7 +11,6 @@ Contains several extensible images for providing personal cloud services:
 
 - [Docker](https://www.docker.com/) >= 1.13
 - [Docker Compose](https://docs.docker.com/compose/install/) >= 1.10.0
-- [Docker Local Persist Volume Plugin](https://github.com/CWSpear/local-persist) (optional)
 
 ## Available Containers
 

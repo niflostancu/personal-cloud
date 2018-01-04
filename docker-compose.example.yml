@@ -38,21 +38,15 @@ services:
 
 volumes:
   nginx-config:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/nginx-config }
+    driver_opts: {type: none, device: /var/nas-data/nginx-config, o: bind}
   nginx-letsencrypt:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/letsencrypt }
+    driver_opts: {type: none, device: /var/nas-data/nginx-letsencrypt, o: bind}
   ttrss:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/ttrss }
+    driver_opts: {type: none, device: /var/nas-data/ttrss, o: bind}
   mysql:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/mysql }
+    driver_opts: {type: none, device: /var/nas-data/mysql, o: bind}
   seafile:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/seafile }
+    driver_opts: {type: none, device: /var/nas-data/seafile, o: bind}
   seafile-data:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/seafile-data }
+    driver_opts: {type: none, device: /var/nas-data/seafile-data, o: bind}
 
