@@ -18,14 +18,6 @@ services:
 
 Note that it depends on the [MySQL container](MySQL.md), so make sure to include it too.
 
-It also requires a persistent volume for storing the *.php* files and its configuration:
-```yaml
-volumes:
-  ttrss:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/ttrss }
-```
-
 You will also probably want to reverse-proxy it using the [Frontend container](Frontend.md).
 Don't forget to activate the *ttrss* snippet and add it as link dependency:
 

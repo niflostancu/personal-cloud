@@ -22,15 +22,6 @@ services:
       - mysql:/var/lib/mysql/
 ```
 
-And declare the *mysql* volume (in this example, we're using the *local-persist* driver):
-
-```yaml
-volumes:
-  mysql:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/mysql }
-```
-
 ## Initialization
 
 The MySQL server needs to be initialized before using it.

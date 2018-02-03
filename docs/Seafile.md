@@ -33,18 +33,6 @@ services:
 
 Note that it depends on the [MySQL service](MySQL.md), so make sure to include it too.
 
-It also requires several persistent volumes for storing configuration and data:
-
-```yaml
-volumes:
-  seafile:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/seafile }
-  seafile-data:
-    driver: local-persist
-    driver_opts: { mountpoint: /var/nas-data/seafile-data }
-```
-
 You will probably want to reverse-proxy it using the [Frontend container](Frontend.md).
 To do this, set the "FASTCGI=true" environment variable and link it to the _frontend_ container:
 

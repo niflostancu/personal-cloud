@@ -33,17 +33,7 @@ services:
      - seafile:/home/seafile/  # seahub's media needs to be served by nginx
 ```
 
-Don't forget to create the volumes using your preferred driver (e.g.
-local-persist):
-```yaml
-volumes:
-  nginx-config:
-    driver: local-persist
-    driver_opts: {mountpoint: '/var/nas-data/nginx-config'}
-  nginx-letsencrypt:
-    driver: local-persist
-    driver_opts: {mountpoint: '/var/nas-data/letsencrypt'}
-```
+Don't forget to declare the `nginx-config` and `nginx-letsencrypt` volumes!
 
 ## Initialization
 
