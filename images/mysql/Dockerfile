@@ -1,9 +1,9 @@
-# Generic MySQL container image
+# User-friendly, alpine-based MySQL image
 FROM nicloud/base
 MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
 ENV MYSQL_UID=1000
-RUN userdel mysql; useradd -u $MYSQL_UID -s /bin/false mysql
+RUN useradd -u $MYSQL_UID -s /bin/false mysql
 
 RUN apk --update --no-cache add mariadb mariadb-client pwgen logrotate dcron
 
@@ -17,7 +17,7 @@ ADD conf/crontab /var/spool/cron/crontabs/root
 
 # Container scripts
 ADD scripts /usr/local/bin/
-ADD init/check-mysql.sh /etc/startup.d/00-check-mysql.sh
+ADD init/check-mysql.sh /etc/startup.d/10-mysql-check.sh
 ADD init/mysql.sh /etc/service/mysql/run
 ADD init/crond.sh /etc/service/crond/run
 

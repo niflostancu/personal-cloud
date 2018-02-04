@@ -29,6 +29,7 @@ if [ -d "/var/lib/mysql/mysql" ]; then
     fi
 fi
 
+echo "Initializing the MySQL data volume..."
 if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
     while true; do
         read -s -p "Enter the MySQL root password: " MYSQL_ROOT_PASSWORD
@@ -36,7 +37,7 @@ if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
         read -s -p "Enter the MySQL root password (confirmation): " MYSQL_ROOT_PASSWORD2
         echo
         [ -n "$MYSQL_ROOT_PASSWORD" ] && [ "$MYSQL_ROOT_PASSWORD" = "$MYSQL_ROOT_PASSWORD2" ] && break
-        echo "The passwords do not match! Please try again..."
+        echo "The password is invalid / does not match! Please try again..."
     done
 fi
 
