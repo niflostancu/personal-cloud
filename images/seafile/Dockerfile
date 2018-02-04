@@ -5,7 +5,7 @@ MAINTAINER Florin Stancu <niflostancu@gmail.com>
 ENV SEAFILE_UID=1000 \
     SEAFILE_HOME="/home/seafile" \
     SEAFILE_DATA_DIR="/var/lib/seafile" \
-    SEAFILE_VERSION="6.2.3"
+    SEAFILE_VERSION="6.2.5"
 
 # Main build script
 COPY build.sh /tmp/build.sh

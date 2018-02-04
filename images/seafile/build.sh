@@ -11,7 +11,7 @@ PATH="${PATH}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 SEAFILE_HOME=${SEAFILE_HOME:-/home/seafile}
 
 # Seafile Version
-SEAFILE_VERSION="${SEAFILE_VERSION:-6.2.3}"
+SEAFILE_VERSION="${SEAFILE_VERSION:-6.2.5}"
 
 #[ -z $LIBEVHTP_VERSION  ] && LIBEVHTP_VERSION="1.2.0"
 [ -z $LIBEVHTP_VERSION  ] && LIBEVHTP_VERSION="18c649203f009ef1d77d6f8301eba09af3777adf"
