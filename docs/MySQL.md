@@ -1,14 +1,15 @@
 # MySQL Database Container
 
-The MySQL (which, actually, is MariaDB) container provides database storage for
+The MySQL (which is, actually, MariaDB) container provides database storage for
 the other services.
+
+It provides easy to use setup scripts and supports automatic, rotating backup
+(daily, monthly and yearly).
 
 ## WARNING
 
-**The container was recently upgraded to MariaDB on an Alpine image. Innodb
-databases might not get converted automatically. If this is the case, use
-_mysqldump_ on the old container to export the databases and import them on a
-clean MariaDB configuration.**
+**You may want to have database dumps / backups before upgrading this container.
+Usually, nothing goes wrong, but just in case...**
 
 ## Usage
 
@@ -22,29 +23,38 @@ services:
       - mysql:/var/lib/mysql/
 ```
 
+And map the **mysql** volume to a persistent location (feel free to use bind
+mounts).
+
 ## Initialization
 
 The MySQL server needs to be initialized before using it.
 To do this, just run it inside an interactive session:
 
 ```bash
-docker-compose run mysql
+docker-compose run mysql mysql-init.sh
 ```
 
-This will ask you for a root password and create the required databases.
+It will then ask you for a root password and create the required databases.
 
-Note that you only need to do this once (if your data directory is mounted as a
+Note that you only need to do this once (it will be saved inside your data
 volume).
 
-If you ever need a MySQL console, you can use an exec:
+## Accessing the MySQL Console
+
+If you ever need a MySQL console, you can use docker-compose exec:
 
 ```bash
+# the service needs to be up!
+docker-compose up mysql
+# open the MySQL console
 docker-compose exec mysql mysql -u root -p
 ```
 
 ## Automatic Backup
 
-The container supports automatic backup & rotation via mysqldump / logrotate.
+The container supports automatic backup with daily / monthly / yearly rotation
+via mysqldump / logrotate.
 
 To enable it, you need to:
 
