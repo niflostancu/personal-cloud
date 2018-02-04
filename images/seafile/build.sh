@@ -1,31 +1,21 @@
 #!/bin/bash
+# Seafile build script for Alpine Linux
+# Forked from https://github.com/VGoshev/seafile-docker
 
 set -e
 set -x
 
 PATH="${PATH}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 
-# Seafile Version (first argument)
-SEAFILE_VERSION="6.2.3"
-if [ "x$1" != "x" ]; then
-    SEAFILE_VERSION=$1
-fi
+# Destination dir for the Seafile installation
+SEAFILE_HOME=${SEAFILE_HOME:-/home/seafile}
+
+# Seafile Version
+SEAFILE_VERSION="${SEAFILE_VERSION:-6.2.3}"
 
 #[ -z $LIBEVHTP_VERSION  ] && LIBEVHTP_VERSION="1.2.0"
 [ -z $LIBEVHTP_VERSION  ] && LIBEVHTP_VERSION="18c649203f009ef1d77d6f8301eba09af3777adf"
 [ -z $LIBSEARPC_VERSION ] && LIBSEARPC_VERSION="3.1-latest"
-
-# Destination dir for the Seafile installation
-SEAFILE_HOME="/home/seafile"
-if [ "x$2" != "x" ]; then
-    SEAFILE_HOME=$2
-fi
-
-# Use latest versions?
-EDGE_V=0
-if [ "x$3" = "x1" ]; then
-    EDGE_V=1
-fi
 
 # Use a temporary dir for all our work
 WORK_DIR="/tmp/seafile"
@@ -38,7 +28,7 @@ cd $WORK_DIR
 apk --update --no-cache add \
     bash openssl python py-setuptools py-imaging sqlite \
     libevent util-linux glib jansson libarchive \
-		mariadb-client-libs postgresql-libs py-pillow
+    mariadb-client-libs postgresql-libs py-pillow
 
 apk add --virtual .build_dep \
     curl-dev libevent-dev glib-dev util-linux-dev intltool \
@@ -75,17 +65,17 @@ wget https://github.com/haiwen/seafdav/archive/v${SEAFILE_VERSION}-server.tar.gz
 # Seahub is python application, just copy it in proper directory
 
 cd $WORK_DIR/seahub-${SEAFILE_VERSION}-server/ &&
-echo "diff --git a/seahub/settings.py b/seahub/settings.py
+    echo "diff --git a/seahub/settings.py b/seahub/settings.py
 index 0b40098..a569b94 100644
 --- a/seahub/settings.py
 +++ b/seahub/settings.py
 @@ -472,7 +472,7 @@ SESSION_COOKIE_AGE = 24 * 60 * 60
- # Days of remembered login info (deafult: 7 days)
- LOGIN_REMEMBER_DAYS = 7
+# Days of remembered login info (deafult: 7 days)
+LOGIN_REMEMBER_DAYS = 7
 -SEAFILE_VERSION = '5.1.0'
 +SEAFILE_VERSION = '${SEAFILE_VERSION}'
- # Compress static files(css, js)
- COMPRESS_URL = MEDIA_URL
+# Compress static files(css, js)
+COMPRESS_URL = MEDIA_URL
 " | patch -p1 && pip install -r requirements.txt
 
 pip install gunicorn flup django-picklefield requests mysql-python
@@ -147,10 +137,9 @@ adduser -D -s /bin/sh -g "Seafile Server" -G seafile -h "$SEAFILE_HOME" -u "$SEA
 # Create seafile-server dir 
 su - -c "mkdir ${SEAFILE_HOME}/seafile-server" seafile
 
-# Store seafile version and if this is edge image
+# Store seafile version
 mkdir -p /opt/seafile
 echo -n "$SEAFILE_VERSION" > /opt/seafile/version
-echo -n "$EDGE_V" > /opt/seafile/edge
 
 echo "The seafile user has been created and configured successfully!"
 
