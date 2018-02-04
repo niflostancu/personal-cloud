@@ -13,40 +13,33 @@ services:
      - SSL_ENABLED=false
      - "DEFAULT_SNIPPETS=seafile ttrss"
     volumes:
-     - nginx-config:/etc/nginx.overrides/
-     - nginx-letsencrypt:/etc/letsencrypt/
-     - seafile:/home/seafile/  # seahub's media needs to be served by nginx
+     - ./data/nginx-config:/etc/nginx.overrides/
+     - ./data/nginx-letsencrypt:/etc/letsencrypt/
+     - ./data/seafile:/home/seafile/  # seahub's media needs to be served by nginx
   mysql:
     image: nicloud/mysql:latest
     volumes:
-      - mysql:/var/lib/mysql/
+      - ./data/mysql:/var/lib/mysql/
   ttrss:
     image: nicloud/ttrss-nginx:latest
     volumes:
-     - ttrss:/var/www/
+     - ./data/ttrss:/var/www/
     links:
      - mysql
   seafile:
     image: nicloud/seafile:latest
     volumes:
-     - seafile:/home/seafile/
-     - seafile-data:/var/lib/seafile/
+     - ./data/seafile:/home/seafile/
+     - ./data/seafile-data:/var/lib/seafile/
     links:
      - mysql
     environment:
      - FASTCGI=true
-
-volumes:
-  nginx-config:
-    driver_opts: {type: none, device: /var/nas-data/nginx-config, o: bind}
-  nginx-letsencrypt:
-    driver_opts: {type: none, device: /var/nas-data/nginx-letsencrypt, o: bind}
-  ttrss:
-    driver_opts: {type: none, device: /var/nas-data/ttrss, o: bind}
-  mysql:
-    driver_opts: {type: none, device: /var/nas-data/mysql, o: bind}
-  seafile:
-    driver_opts: {type: none, device: /var/nas-data/seafile, o: bind}
-  seafile-data:
-    driver_opts: {type: none, device: /var/nas-data/seafile-data, o: bind}
+  phabricator:
+    image: nicloud/phabricator:latest
+    volumes:
+     - ./data/phabricator-conf:/srv/phabricator/conf/
+     - ./data/phabricator-repo:/var/repo/
+    links:
+     - mysql
 

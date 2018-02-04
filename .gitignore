@@ -1,5 +1,9 @@
 # do not sync the final docker-compose
 docker-compose.yml
+# environment files
+.env
+# may be used for data mountpoint
+data/
 # directory for personal images which shouldn't be committed
 images.local/
 
