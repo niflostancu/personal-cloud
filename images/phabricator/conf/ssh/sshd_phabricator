@@ -1,0 +1,18 @@
+# Phabricator SSH Server config
+AuthorizedKeysCommand /usr/local/libexec/phabricator-ssh-hook.sh
+AuthorizedKeysCommandUser git
+AllowUsers git
+
+Port 22
+Protocol 2
+PermitRootLogin no
+AllowAgentForwarding no
+AllowTcpForwarding no
+PrintMotd no
+PrintLastLog no
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+AuthorizedKeysFile none
+
+PidFile /var/run/sshd-phabricator.pid
+
