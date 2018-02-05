@@ -9,10 +9,10 @@ PermitRootLogin no
 AllowAgentForwarding no
 AllowTcpForwarding no
 PrintMotd no
-PrintLastLog no
 PasswordAuthentication no
 ChallengeResponseAuthentication no
 AuthorizedKeysFile none
+UseDNS no
 
 PidFile /var/run/sshd-phabricator.pid
 

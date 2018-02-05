@@ -81,11 +81,18 @@ if [[ ! -f "$PHB_PATH/conf/__init_conf__.php" ]]; then
     cp -a "$PHB_PATH/conf.orig/." "$PHB_PATH/conf/"
 fi
 
+# Fix repository permissions
+chown phabricator:phabricator /var/repo
+
 if [[ -z "$(phb_config_get phd.user)" ]] || \
         [[ -z "$(phb_config_get diffusion.ssh-user)" ]]; then
     as_phb "$PHB_PATH/bin/config" set phd.user phabricator
     as_phb "$PHB_PATH/bin/config" set diffusion.ssh-user git
-    as_phb "$PHB_PATH/bin/config" set diffusion.ssh-port 2222
+fi
+
+DIFFUSION_SSH_PORT="${DIFFUSION_SSH_PORT:-2222}"
+if [[ "$(phb_config_get diffusion.ssh-port)" != "${DIFFUSION_SSH_PORT}" ]]; then
+    as_phb "$PHB_PATH/bin/config" set diffusion.ssh-port "${DIFFUSION_SSH_PORT}"
 fi
 
 if [[ -z "$(phb_config_get mysql.host)" ]] || \

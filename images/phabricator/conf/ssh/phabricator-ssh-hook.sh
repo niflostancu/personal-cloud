@@ -1,10 +1,7 @@
-#!/bin/sh
-VCSUSER="git"
-ROOT="/srv/phabricator"
+#!/bin/bash
+PHB_ROOT="/srv/phabricator"
 
-if [ "$1" != "$VCSUSER" ]; then
-    exit 1
-fi
+[[ "$1" != "git" ]] && exit 1
 
-exec "$ROOT/bin/ssh-auth" $@
+exec "$PHB_ROOT/bin/ssh-auth" $@
 

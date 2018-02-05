@@ -12,6 +12,8 @@ Add the following to your *docker-compose.yml* file:
 services:
   phabricator:
     image: nicloud/phabricator:latest
+    environment:
+      - DIFFUSION_SSH_PORT=2222
     volumes:
       - phabricator-conf:/srv/phabricator/conf/
       - phabricator-repo:/var/repo/
