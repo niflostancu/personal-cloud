@@ -11,9 +11,11 @@ RUN useradd -u $GIT_UID -s /bin/false git
 RUN apk --update --no-cache add \
     nginx mariadb-client php7-fpm php7 php7-curl php7-gd php7-json php7-pcntl php7-fileinfo \
     php7-xml php7-posix php7-session php7-pgsql php7-mysqli php7-mcrypt \
-    php7-mbstring php7-iconv php7-ctype php7-apcu py3-pygments git ca-certificates sudo jq
+    php7-mbstring php7-iconv php7-ctype php7-opcache php7-apcu \
+    py3-pygments git ca-certificates sudo jq
 
-RUN mkdir -p /run/php && mkdir -p /run/nginx
+RUN mkdir -p /run/php && mkdir -p /run/nginx && \
+    ln -s /usr/bin/pygmentize-3 /usr/local/bin/pygmentize
 
 # clone phabricator
 ADD scripts/phabricator-clone.sh /usr/local/bin/phabricator-clone.sh
