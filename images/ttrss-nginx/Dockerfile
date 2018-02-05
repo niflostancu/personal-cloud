@@ -22,7 +22,7 @@ ADD init/nginx.sh /etc/service/nginx/run
 ADD init/php-fpm.sh /etc/service/php-fpm/run
 ADD init/ttrss-update-daemon.sh /etc/service/ttrss-update-daemon/run
 
-ADD conf/php-overrides.ini /etc/php7/fpm/conf.d/99-overrides.ini
+ADD conf/php-overrides.ini /etc/php7/conf.d/99-overrides.ini
 ADD conf/php-fpm-www.conf /etc/php7/php-fpm.d/www.conf
 ADD conf/nginx-default.conf /etc/nginx/conf.d/default.conf
 
