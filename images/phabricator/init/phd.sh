@@ -1,4 +1,8 @@
 #!/bin/bash
+
+rm -f /var/tmp/phd/log/daemons.log
+ln -s /dev/stderr /var/tmp/phd/log/daemons.log
+
 chpst -u phabricator -- /srv/phabricator/bin/phd start
 
 sleep 3

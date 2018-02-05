@@ -2,11 +2,10 @@
 FROM nicloud/base
 MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
-# create nginx before installing the package to use it during install scripts
 ENV WWW_UID=998 PHD_UID=999 GIT_UID=1000
+
+# create nginx before installing the package to use the custom UID
 RUN useradd -u $WWW_UID -s /bin/false nginx
-RUN useradd -u $PHD_UID -s /bin/bash phabricator
-RUN useradd -u $GIT_UID -s /bin/false git
 
 RUN apk --update --no-cache add \
     nginx mariadb-client php7-fpm php7 php7-curl php7-gd php7-json php7-pcntl php7-fileinfo \
@@ -18,8 +17,8 @@ RUN mkdir -p /run/php && mkdir -p /run/nginx && \
     ln -s /usr/bin/pygmentize-3 /usr/local/bin/pygmentize
 
 # clone phabricator
-ADD scripts/phabricator-clone.sh /usr/local/bin/phabricator-clone.sh
-RUN phabricator-clone.sh
+ADD scripts/phabricator-install.sh /usr/local/bin/phabricator-install.sh
+RUN phabricator-install.sh
 
 # expose HTTP and SSH
 VOLUME /srv/phabricator/conf/
@@ -32,7 +31,8 @@ ADD init/nginx.sh /etc/service/nginx/run
 ADD init/php-fpm.sh /etc/service/php-fpm/run
 ADD init/phd.sh /etc/service/phd/run
 
-ADD conf/php/php-fpm.ini /etc/php7/fpm/conf.d/99-overrides.ini
+ADD conf/sudoers /etc/sudoers.d/phabricator
+ADD conf/php/php-overrides.ini /etc/php7/conf.d/99-overrides.ini
 ADD conf/php/fpm.conf /etc/php7/php-fpm.d/www.conf
 ADD conf/nginx-default.conf /etc/nginx/conf.d/default.conf
 
