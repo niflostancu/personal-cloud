@@ -81,6 +81,11 @@ if [[ ! -f "$PHB_PATH/conf/__init_conf__.php" ]]; then
     cp -a "$PHB_PATH/conf.orig/." "$PHB_PATH/conf/"
 fi
 
+# Configure date.timezone for PHP
+if [[ -n "$TZ" ]]; then
+    echo "date.timezone=$TZ" > /etc/php7/conf.d/99-timezone.ini
+fi
+
 # Fix repository permissions
 chown phabricator:phabricator /var/repo
 
