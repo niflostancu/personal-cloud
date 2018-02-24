@@ -15,6 +15,7 @@ push:
 	make -C ./images/mysql/ push
 	make -C ./images/seafile/ push
 	make -C ./images/ttrss-nginx/ push
+	make -C ./images/phabricator/ push
 
 base:
 	make -C ./images/base/ build
@@ -27,6 +28,9 @@ mysql:
 
 seafile:
 	make -C ./images/seafile/ build
+
+phabricator:
+	make -C ./images/phabricator/ build
 
 ttrss:
 	make -C ./images/ttrss-nginx/ build
