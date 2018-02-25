@@ -60,6 +60,13 @@ if [[ -n "$INSECURE_SNIPPETS" ]]; then
             echo "WARNING: insecure snippet '$snippet' not found!"
     done
 fi
+if [[ -n "$SITES_ENABLED" ]]; then
+    for site in $SITES_ENABLED; do
+        ln -s "/etc/nginx/sites-available/$site" "/etc/nginx/sites-enabled/$site.conf" || \
+            echo "WARNING: site '$site' not found!"
+    done
+fi
+
 
 exec /usr/sbin/nginx -g "daemon off;"
 
