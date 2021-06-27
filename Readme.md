@@ -1,5 +1,12 @@
 # Docker-based Personal Cloud / NAS images
 
+## ⚠️ Deprecated!
+
+Note: this code is deprecated!
+Superseded by https://github.com/niflostancu/k8s-nas.
+
+## Intro
+
 Contains several extensible images for providing personal cloud services:
 
 - MySQL database (for services that depend on it);
